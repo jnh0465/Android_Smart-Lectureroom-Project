@@ -17,4 +17,8 @@ public interface IMyService {
     @POST("student/process/changePasswordProcess")
     @FormUrlEncoded
     Observable<String> changePasswordUser(@Field("student_id") String email, @Field("student_password") String password);
+
+    @POST("student/process/getTokenProcess")
+    @FormUrlEncoded
+    Observable<String> sendToken(@Field("student_id") String email, @Field("student_token") String token);
 }

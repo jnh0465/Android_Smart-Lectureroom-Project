@@ -38,7 +38,7 @@ function buildQueryPack(docsPack){
     };
  }
 
- function queryStudentByID(queryPack){
+ function queryStudent(queryPack){
      const queryObject = queryPack.queryObject;
      let docsObject = queryPack.docsObject;
 
@@ -83,7 +83,7 @@ function buildQueryPack(docsPack){
     buildQueryPack : buildQueryPack,
     setQueryPack : setQueryPack,
     setDocsPack : setDocsPack,
-    queryStudentByID : queryStudentByID,
+    queryStudent : queryStudent,
     insertStudent : insertStudent,
     updateStudent : updateStudent
 }

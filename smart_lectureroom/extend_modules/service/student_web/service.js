@@ -141,6 +141,53 @@ module.exports = {
             }
         })
         .catch((err)=>{console.log(err);});
-    }
+    },
 
+    getTokenProcess : (userInfo, callback)=>{
+        const id = userInfo.student_id;
+        const token = userInfo.student_token;
+
+        console.log("-----------------");
+        console.log("loginProcess for Android(Student)")
+        console.log("id : " + id);
+        console.log("토큰 : " + token);
+        console.log("-----------------");
+
+        const queryObject = {"student_id":{"$in":[id]}}; //몽고디비 쿼리 내용
+        mongoDB.findStudent(queryObject)
+        .then((docsPack)=>{
+            const docs = docsPack.docs;
+            const amount = docs.length;
+            let result={
+                STATE : "SUCCESS",
+                DETAIL : "SUCCESS_LOGIN"
+            };
+            if(amount===1){ //회원가입된 아이디
+                const student = docs[0];
+                if(result.STATE ==="SUCCESS"){
+                    let updateObject = {
+                         query : {student_id: id},
+                         update : { $set: { student_token: token}}
+                    }
+
+                    result.data ={
+                        id : student.student_id, //로그인 id 저장
+                        name : student.student_name //로그인 성명 저장
+                    }
+
+                    mongoDB.updateStudent(updateObject)
+                    .then(()=>{
+                        callback(result);
+                    });
+                }
+            }
+            if(amount===0){ //회원가입되지 않은 아이디
+                result.STATE="ERR";
+                result.DETAIL="NOT_FOUND_ID";
+            }else{
+              callback(result);
+            }
+        })
+        .catch((err)=>{console.log(err);});
+    }
 }

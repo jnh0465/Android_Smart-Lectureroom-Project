@@ -28,6 +28,14 @@ public class SharedPreferenceManager {
         editor.commit();
     }
 
+    /* token 저장 */
+    public static void setToken(Context context, String key, boolean value) {
+        SharedPreferences prefs = getPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
+
     /* String 로드 */
     public static String getString(Context context, String key) {
         SharedPreferences prefs = getPreferences(context);
@@ -37,6 +45,13 @@ public class SharedPreferenceManager {
 
     /* boolean 로드 */
     public static boolean getBoolean(Context context, String key) {
+        SharedPreferences prefs = getPreferences(context);
+        boolean value = prefs.getBoolean(key, DEFAULT_VALUE_BOOLEAN);
+        return value;
+    }
+
+    /* token 로드 */
+    public static boolean getToken(Context context, String key) {
         SharedPreferences prefs = getPreferences(context);
         boolean value = prefs.getBoolean(key, DEFAULT_VALUE_BOOLEAN);
         return value;

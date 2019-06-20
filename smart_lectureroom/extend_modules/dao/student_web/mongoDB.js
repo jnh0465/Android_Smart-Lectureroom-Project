@@ -3,7 +3,7 @@ var baseDBFunction = require('../baseDBFunction'); //mongoDB 관련 커스텀함
  module.exports = {
     findStudent : (queryObject)=>{
         const queryPack = baseDBFunction.setQueryPack(queryObject,{});
-        return baseDBFunction.queryStudentByID(queryPack);
+        return baseDBFunction.queryStudent(queryPack);
     },
     insertStudent : (insertObject)=>{
         return baseDBFunction.insertStudent(insertObject);

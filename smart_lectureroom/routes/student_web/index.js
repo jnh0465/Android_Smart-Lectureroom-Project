@@ -52,6 +52,30 @@ router.post('/process/changePasswordProcess', function(req, res, next) {
   });
 });
 
+//토큰업데이트
+router.post('/process/getTokenProcess', function(req, res, next) {
+  const userInfo = req.body;
+  service.getTokenProcess(userInfo, (result)=>{
+    console.log("json :  "+JSON.stringify(userInfo));//
+    const STATE = result.STATE;
+    const DETAIL = result.DETAIL;
+    if(STATE ==="SUCCESS"){
+      res.json(1); //로그인 성공
+
+      req.session.user = { //로그인 세션 생성
+        id : result.data.id,
+        name : result.data.name
+      }
+      console.log("세션생성 : " + req.session.user.id);
+    }
+    if(STATE ==="ERR") {
+      if(DETAIL ==="NOT_FOUND_ID"){
+        res.json(2);
+      }
+    }
+  });
+});
+
 //로그인
 router.post('/process/loginProcess', function(req, res, next) {
   const userInfo = req.body;

@@ -2,8 +2,8 @@ package com.jiwoolee.android_smartlectureroom;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +15,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.jiwoolee.android_smartlectureroom.Retrofit.IMyService;
 import com.jiwoolee.android_smartlectureroom.Retrofit.RetrofitClient;
 
@@ -70,7 +74,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             checkBox.setChecked(false);                                      //false면 체크x
         }
 
-        if(pref_student_id.length() != 0 && pref_checkbox_state) {
+        if(pref_student_id.length() != 0 && pref_checkbox_state) { //자동로그인시
             showProgressDialog(); //프로그래스바 보이기
             loginUser(pref_student_id, pref_student_pw);
         }
@@ -82,7 +86,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) { //버튼클릭시
         int i = v.getId();
         if (i == R.id.btn_login) {
-            boolean test = validateForm(); //폼 채움 여부 확인
+            boolean test = validateForm(edit_login_id, edit_login_password); //폼 채움 여부 확인
             if(test){
                 loginUser(edit_login_id.getText().toString(), edit_login_password.getText().toString());
             }
@@ -106,6 +110,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
        alertdialog로 바꿔 onPositiveButton을 중첩시켜서 처리하던가 dialog가 아닌 activity로(추후 문자인증까지 욕심내면) 처리해야할듯
        일단 나중에 할래... 19/06/18 1702
     */
+
     private void MaterialDialog(){
         final View register_layout = LayoutInflater.from(LoginActivity.this).inflate(R.layout.findpw_layout, null);
         new MaterialStyledDialog.Builder(LoginActivity.this)
@@ -114,18 +119,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 .setNegativeText("CANSEL")
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
                         dialog.dismiss();
                     }
                 })
                 .setPositiveText("SEND")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
                         edit_register_id = register_layout.findViewById(R.id.edit_id);
                         edit_register_password = register_layout.findViewById(R.id.edit_password);
 
-                        boolean test = validateForm_find(); //폼 채움 여부 확인
+                        boolean test = validateForm(edit_register_id,edit_register_password); //폼 채움 여부 확인
                         if(test){
                             findPassword(edit_register_id.getText().toString(), edit_register_password.getText().toString());
                         }
@@ -141,7 +146,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     @Override
                     public void accept(String response) throws Exception {
                         if(response.equals("1")){ //로그인 성공시
-                            showProgressDialog(); //프로그래스바 보이기
                             Toast.makeText(mContext, "비밀번호가 변경되었습니다.", Toast.LENGTH_SHORT).show();
                         }else if(response.equals("2")){
                             Toast.makeText(mContext, "존재하지 않는 아이디입니다.", Toast.LENGTH_SHORT).show();
@@ -151,46 +155,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         );
     }
 
-    private boolean validateForm_find() { //로그인 폼 채움 여부
+    private boolean validateForm(TextView textview_id, TextView textview_pw) { //폼 채움 여부
         boolean valid = true;
-
-        String id = edit_register_id.getText().toString();
-        String pw = edit_register_password.getText().toString();
+        String id = textview_id.getText().toString();
+        String pw = textview_pw.getText().toString();
 
         if (TextUtils.isEmpty(id)) {
-            edit_register_id.setError("학번을 입력해주세요");
+            textview_id.setError("학번을 입력해주세요");
+            valid = false;
+        } else if (TextUtils.isEmpty(pw)) {
+            textview_id.setError(null);
+            textview_pw.setError("비밀번호를 입력해주세요");
             valid = false;
         } else {
-            edit_register_id.setError(null);
-        }
-
-        if (TextUtils.isEmpty(pw)) {
-            edit_register_password.setError("비밀번호를 입력해주세요");
-            valid = false;
-        } else {
-            edit_register_password.setError(null);
-        }
-        return valid;
-    }
-
-    private boolean validateForm() { //로그인 폼 채움 여부
-        boolean valid = true;
-
-        String id = edit_login_id.getText().toString();
-        String pw = edit_login_password.getText().toString();
-
-        if (TextUtils.isEmpty(id)) {
-            edit_login_id.setError("학번을 입력해주세요");
-            valid = false;
-        } else {
-            edit_login_id.setError(null);
-        }
-
-        if (TextUtils.isEmpty(pw)) {
-            edit_login_password.setError("비밀번호를 입력해주세요");
-            valid = false;
-        } else {
-            edit_login_password.setError(null);
+            textview_pw.setError(null);
         }
         return valid;
     }

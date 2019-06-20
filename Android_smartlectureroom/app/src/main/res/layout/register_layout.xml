@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edit_id"
         android:layout_width="match_parent"
