@@ -1,4 +1,4 @@
-package com.jiwoolee.android_smartlectureroom.Retrofit;
+package com.jiwoolee.android_smartlectureroom.model;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;

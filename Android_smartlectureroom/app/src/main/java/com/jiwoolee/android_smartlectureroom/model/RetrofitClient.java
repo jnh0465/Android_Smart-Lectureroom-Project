@@ -1,4 +1,4 @@
-package com.jiwoolee.android_smartlectureroom.Retrofit;
+package com.jiwoolee.android_smartlectureroom.model;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;

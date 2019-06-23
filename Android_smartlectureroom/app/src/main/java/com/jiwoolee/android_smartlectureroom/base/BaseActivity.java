@@ -1,13 +1,16 @@
-package com.jiwoolee.android_smartlectureroom;
+package com.jiwoolee.android_smartlectureroom.base;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
+
+import com.jiwoolee.android_smartlectureroom.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
 

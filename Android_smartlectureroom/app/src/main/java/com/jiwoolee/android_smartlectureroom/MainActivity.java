@@ -1,14 +1,8 @@
 package com.jiwoolee.android_smartlectureroom;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -17,8 +11,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.jiwoolee.android_smartlectureroom.Retrofit.IMyService;
-import com.jiwoolee.android_smartlectureroom.Retrofit.RetrofitClient;
+import com.jiwoolee.android_smartlectureroom.model.IMyService;
+import com.jiwoolee.android_smartlectureroom.model.RetrofitClient;
+
+import androidx.appcompat.app.AppCompatActivity;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Context mContext;
