@@ -1,18 +1,18 @@
-package com.jiwoolee.android_smartlectureroom;
+package com.jiwoolee.android_smartlectureroom.view.login;
 
 import android.widget.TextView;
 
 import com.jiwoolee.android_smartlectureroom.base.BaseContract;
 
-public interface MainContract {
+public interface LoginContract {
 
     interface View extends BaseContract.View  {
-        void showToast();
+        void autoLogin();
 
+        void startActivity();
     }
 
     interface Presenter extends BaseContract.Presenter<View> {
-
         @Override
         void setView(View view);
 

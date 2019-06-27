@@ -1,9 +1,9 @@
-package com.jiwoolee.android_smartlectureroom;
-
+package com.jiwoolee.android_smartlectureroom.view.login;
 import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jiwoolee.android_smartlectureroom.base.SharedPreferenceManager;
 import com.jiwoolee.android_smartlectureroom.model.IMyService;
 import com.jiwoolee.android_smartlectureroom.model.RetrofitClient;
 
@@ -13,12 +13,12 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
-public class MainPresenter implements MainContract.Presenter {
-    private MainContract.View view;
+public class LoginPresenter implements LoginContract.Presenter {
+    private LoginContract.View view;
     private CompositeDisposable disposable;
     private IMyService iMyService;
 
-    MainPresenter() {
+    LoginPresenter() {
         this.disposable = new CompositeDisposable();
 
         Retrofit retrofitClient = RetrofitClient.getInstance();
@@ -26,8 +26,9 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void setView(MainContract.View view) {
+    public void setView(LoginContract.View view) {
         this.view = view;
+        view.autoLogin();
     }
 
     @Override
@@ -37,7 +38,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void loginUser(final String student_id, final String student_password) {
-        view.showToast(); //
         disposable.add(iMyService.loginUser(student_id, student_password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -45,12 +45,11 @@ public class MainPresenter implements MainContract.Presenter {
                     @Override
                     public void accept(String response) throws Exception {
                         if(response.equals("1")){ //로그인 성공시
-//                            Intent intent = new Intent(mContext, MainActivity.class);
-//                            startActivity(intent);
+                            view.startActivity();
                             SharedPreferenceManager.setString(LoginActivity.mContext, "PREF_ID", student_id);
                             SharedPreferenceManager.setString(LoginActivity.mContext, "PREF_PW", student_password);
-                            Toast.makeText(LoginActivity.mContext, SharedPreferenceManager.getString(LoginActivity.mContext,"PREF_ID")+
-                                    SharedPreferenceManager.getString(LoginActivity.mContext,"PREF_PW"), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(LoginActivity.mContext, SharedPreferenceManager.getString(LoginActivity.mContext,"PREF_ID")+
+//                                    SharedPreferenceManager.getString(LoginActivity.mContext,"PREF_PW"), Toast.LENGTH_SHORT).show();
 
                         }else if(response.equals("2")){
                             Toast.makeText(LoginActivity.mContext, "존재하지 않는 아이디입니다.", Toast.LENGTH_SHORT).show();

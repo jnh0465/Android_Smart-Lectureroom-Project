@@ -189,5 +189,89 @@ module.exports = {
             }
         })
         .catch((err)=>{console.log(err);});
-    }
+    },
+
+    getScheduleProcess : (userInfo, callback)=>{
+    const id = userInfo.student_id;
+    var toAndroid=[];
+
+    const queryObject = {"student_id":{"$in":[id]}}; //몽고디비 쿼리 내용
+    mongoDB.getLectureInfo_student(queryObject)
+    .then((content)=>{
+      const lecture = content.lecture;
+      for(let j=0; j<lecture.length; j++){
+        for(let k=0; k<lecture[j].lecture_info.length; k++){
+            let lecture_name = lecture[j].lecture_name; //강의명
+
+            let lecture_info = lecture[j].lecture_info[k]; //강의정보
+            let day= lecture_info.lecture_time.substr(0,1); // ex) 월2 -> 월  , 2
+            // if(day=="월"){
+            //   day=1;
+            // }
+            let time = lecture_info.lecture_time.substr(1,1);
+
+            let lecture_room = lecture_info.lectureroom; //강의장소
+            let building = lecture_room.building_name+" "+lecture_room.lectureroom_num;
+
+            // console.log(day+","+time+","+lecture_name+","+building);
+
+            // toAndroid.push(day+","+time+","+lecture_name+","+building+"\n");
+            if(day=="월"){
+              day=0;
+            }else if(day=="화"){
+              day=1;
+            }else if(day=="수"){
+              day=2;
+            }else if(day=="목"){
+              day=3;
+            }else if(day=="금"){
+              day=4;
+            }
+
+            toAndroid.push("a"+day+","+time+","+lecture_name+","+building+"a");
+
+          }
+        }
+        console.log(toAndroid);
+
+        let result={
+            STATE : "SUCCESS",
+            DETAIL : toAndroid
+
+            /*
+            //DETAIL : content //쿼리내용 끌고갑니다아아
+            {"lecture":
+              [
+                {"lecture_name":"알고리즘","lecture_id":"1",
+                "lecture_info":[
+                    {"lectureroom_id":"1","lecture_time":"목8","lectureroom":{"building_name":"실습관","lectureroom_num":"411호","camera_id":"DDIE123"}},
+                    {"lectureroom_id":"1","lecture_time":"목9","lectureroom":{"building_name":"실습관","lectureroom_num":"411호","camera_id":"DDIE123"}},
+                    {"lectureroom_id":"2","lecture_time":"월2","lectureroom":{"building_name":"실습관","lectureroom_num":"410호","camera_id":"DDIE120"}}
+                  ]
+                },
+
+                {"lecture_name":"자료구조","lecture_id":"2",
+                "lecture_info":[
+                  {"lectureroom_id":"2","lecture_time":"화5","lectureroom":{"building_name":"실습관","lectureroom_num":"410호","camera_id":"DDIE120"}},
+                  {"lectureroom_id":"2","lecture_time":"화6","lectureroom":{"building_name":"실습관","lectureroom_num":"410호","camera_id":"DDIE120"}},
+                  {"lectureroom_id":"2","lecture_time":"화7","lectureroom":{"building_name":"실습관","lectureroom_num":"410호","camera_id":"DDIE120"}}
+                ]
+              },
+
+                {"lecture_name":"자바스크립트","lecture_id":"3",
+                "lecture_info":[
+                  {"lectureroom_id":"1","lecture_time":"목1","lectureroom":{"building_name":"실습관","lectureroom_num":"411호","camera_id":"DDIE123"}},
+                  {"lectureroom_id":"1","lecture_time":"목2","lectureroom":{"building_name":"실습관","lectureroom_num":"411호","camera_id":"DDIE123"}},
+                  {"lectureroom_id":"1","lecture_time":"목3","lectureroom":{"building_name":"실습관","lectureroom_num":"411호","camera_id":"DDIE123"}}
+                ]
+              }
+            ]
+
+            */
+        };
+
+        callback(result);
+    })
+    .catch((err)=>{console.log(err);});
+  }
 }

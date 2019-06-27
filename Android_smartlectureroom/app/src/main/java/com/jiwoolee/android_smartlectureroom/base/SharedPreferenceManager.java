@@ -1,4 +1,4 @@
-package com.jiwoolee.android_smartlectureroom;
+package com.jiwoolee.android_smartlectureroom.base;
 import android.content.Context;
 import android.content.SharedPreferences;
 

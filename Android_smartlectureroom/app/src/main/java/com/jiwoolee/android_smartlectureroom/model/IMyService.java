@@ -21,4 +21,8 @@ public interface IMyService {
     @POST("student/process/getTokenProcess")
     @FormUrlEncoded
     Observable<String> sendToken(@Field("student_id") String email, @Field("student_token") String token);
+
+    @POST("student/process/getScheduleProcess")
+    @FormUrlEncoded
+    Observable<String> getSchedule(@Field("student_id") String email);
 }

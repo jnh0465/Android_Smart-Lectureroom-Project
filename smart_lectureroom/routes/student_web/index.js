@@ -108,5 +108,19 @@ router.post('/process/loginProcess', function(req, res, next) {
   });
 });
 
+//로그
+router.post('/process/getScheduleProcess', function(req, res, next) {
+  const userInfo = req.body;
+
+  service.getScheduleProcess(userInfo, (result)=>{
+    const STATE = result.STATE;
+    const DETAIL = result.DETAIL;
+
+    console.log ("쿼리내용 :"+ JSON.stringify (DETAIL)); //끌려왔습니다아아아ㅏ
+    if(STATE ==="SUCCESS"){
+      res.json(JSON.stringify (DETAIL));
+    }
+  });
+});
 
 module.exports = router;

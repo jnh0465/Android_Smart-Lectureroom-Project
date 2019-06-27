@@ -38,6 +38,75 @@ function buildQueryPack(docsPack){
     };
  }
 
+ function queryProfessor(queryPack){
+   const queryObject=queryPack.queryObject;
+   let docsObject = queryPack.docsObject;
+   //  var docsObject = _docsObject;
+
+    return new Promise((resolve, reject)=>{
+       const professor = db.collection('TB_PROFESSOR');
+       professor.find(queryObject).toArray(function(err,docs){
+
+           console.log("------------------");
+           console.log("queryProfessorByID 쿼리한 내용");
+           console.log(JSON.stringify(docs));
+           console.log("사용한 쿼리문");
+           console.log(JSON.stringify(queryObject));
+           console.log("------------------");
+
+           docsObject.queryProfessorByID=docs;
+           const docsPack = setDocsPack(docs, docsObject);
+           resolve(docsPack);
+       });
+    });
+}
+
+ function queryLecture(queryPack){
+    const queryObject = queryPack.queryObject;
+    let docsObject = queryPack.docsObject;
+
+    return new Promise((resolve, reject)=>{
+        const lecture = db.collection('TB_LECTURE');
+        // lecture.find({ $or:queryObject}).toArray(function(err,docs ){
+        lecture.find(queryObject).toArray(function(err,docs ){
+            console.log("------------------");
+            console.log("queryLectureByID 쿼리한 내용");
+            console.log(JSON.stringify(docs));
+            console.log("사용한 쿼리문");
+            console.log(JSON.stringify(queryObject));
+            console.log("------------------");
+
+            docsObject.queryLectureByID = docs;
+            const docsPack = setDocsPack(docs, docsObject);
+            resolve(docsPack);
+        });
+
+    });
+ }
+
+ function queryLectureRoom(queryPack){
+    const queryObject = queryPack.queryObject;
+    let docsObject = queryPack.docsObject;
+
+    return new Promise((resolve, reject)=>{
+        const lectureRoom = db.collection('TB_LECTUREROOM');
+        lectureRoom.find(queryObject).toArray(function(err,docs ){
+
+            console.log("------------------");
+            console.log("queryLectureRoomByID 쿼리한 내용");
+            console.log(JSON.stringify(docs));
+            console.log("사용한 쿼리문");
+            console.log(JSON.stringify(queryObject));
+            console.log("------------------");
+            docsObject.queryLectureRoomByID = docs;
+            const docsPack = setDocsPack(docs, docsObject);
+            resolve(docsPack);
+        });
+
+    });
+
+ }
+
  function queryStudent(queryPack){
      const queryObject = queryPack.queryObject;
      let docsObject = queryPack.docsObject;
@@ -79,11 +148,64 @@ function buildQueryPack(docsPack){
     });
  }
 
+ function insertAttend(insertObject){
+     return new Promise((resolve, reject)=>{
+        const attend = db.collection('TB_ATTEND');
+        attend.insertOne(insertObject, function(error, res){
+            console.log("------------------");
+            console.log("insertAttendInfo 입력한 내용");
+            console.log(JSON.stringify(insertObject));
+            console.log("------------------");
+            resolve();
+        });
+     });
+ }
+
+ function updateAttend(updateObject){
+    return new Promise((resolve, reject)=>{
+        const attend = db.collection('TB_ATTEND');
+        attend.update(updateObject.query, updateObject.update,function(error,res){
+            console.log("------------------");
+            console.log("updateAttend 입력한 내용");
+            console.log("쿼리 : " + JSON.stringify(updateObject.query));
+            console.log("업데이트 : "+ JSON.stringify(updateObject.update));
+            console.log("------------------");
+            resolve();
+        });
+     });
+ }
+
+ function queryAttend(queryPack){
+    const queryObject = queryPack.queryObject;
+    let docsObject = queryPack.docsObject;
+
+    return new Promise((resolve, reject)=>{
+       const attend = db.collection('TB_ATTEND');
+       attend.find(queryObject).toArray(function(err, docs){
+           console.log("------------------");
+           console.log("queryAttend 쿼리한 내용");
+           console.log(JSON.stringify(docs));
+           console.log("사용한 쿼리문");
+           console.log(JSON.stringify(queryObject));
+           console.log("------------------");
+
+           docsObject.queryAttend = docs;
+           const docsPack = setDocsPack(docs, docsObject);
+           resolve(docsPack);
+       });
+    });
+ }
+ 
  module.exports = {
     buildQueryPack : buildQueryPack,
     setQueryPack : setQueryPack,
     setDocsPack : setDocsPack,
+    queryProfessor : queryProfessor,
+    queryLecture : queryLecture,
+    queryLectureRoom : queryLectureRoom,
     queryStudent : queryStudent,
     insertStudent : insertStudent,
-    updateStudent : updateStudent
+    updateStudent : updateStudent,
+    insertAttend : insertAttend,
+    queryAttend : queryAttend
 }
