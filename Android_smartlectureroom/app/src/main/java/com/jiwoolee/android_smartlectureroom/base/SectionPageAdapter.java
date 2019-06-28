@@ -1,4 +1,4 @@
-package com.jiwoolee.android_smartlectureroom;
+package com.jiwoolee.android_smartlectureroom.base;
 import java.util.ArrayList;
 import java.util.List;
 import androidx.fragment.app.Fragment;
@@ -14,12 +14,15 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
     }
+
     public CharSequence getPageTitle(int position) {
         return mFragmentTitleList.get(position);
     }
+
     public SectionPageAdapter(FragmentManager fm){
         super(fm);
     }
+
     @Override
     public Fragment getItem(int position) { return mFragmentList.get(position); }
 
@@ -27,6 +30,5 @@ public class SectionPageAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return mFragmentList.size() ;
     }
-
 
 }

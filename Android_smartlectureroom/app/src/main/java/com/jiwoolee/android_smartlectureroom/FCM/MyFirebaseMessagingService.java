@@ -18,7 +18,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.jiwoolee.android_smartlectureroom.view.main.MainActivity;
+import com.jiwoolee.android_smartlectureroom.view.main.FragmentActivity;
 import com.jiwoolee.android_smartlectureroom.R;
 
 import java.net.URL;
@@ -55,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotification_alert(String title, String body) {
         PushUtils.releaseWakeLock(); //푸시알림시 화면깨우기
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, FragmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
 
@@ -88,7 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotification(String title, String myimg) {
         PushUtils.releaseWakeLock(); //화면깨우기
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, FragmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
 

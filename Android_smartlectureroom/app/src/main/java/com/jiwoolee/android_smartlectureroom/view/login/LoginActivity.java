@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.jiwoolee.android_smartlectureroom.view.main.MainActivity;
+import com.jiwoolee.android_smartlectureroom.view.main.FragmentActivity;
 import com.jiwoolee.android_smartlectureroom.R;
 import com.jiwoolee.android_smartlectureroom.base.SharedPreferenceManager;
 import com.jiwoolee.android_smartlectureroom.base.BaseActivity;
@@ -88,7 +88,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View, V
 
     @Override
     public void startActivity() {
-        Intent intent = new Intent(mContext, MainActivity.class);
+        Intent intent = new Intent(mContext, FragmentActivity.class);
         startActivity(intent);
     }
 

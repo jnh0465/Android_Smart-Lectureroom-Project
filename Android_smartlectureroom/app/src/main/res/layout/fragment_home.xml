@@ -62,7 +62,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            app:srcCompat="@android:drawable/ic_menu_month" />
+            app:srcCompat="@android:drawable/btn_star_big_on" />
 
         <ImageButton
             android:id="@+id/imageButton4"
