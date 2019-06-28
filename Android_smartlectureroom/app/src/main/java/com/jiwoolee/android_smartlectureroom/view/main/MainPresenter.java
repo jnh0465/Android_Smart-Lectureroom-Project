@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -102,9 +103,10 @@ public class MainPresenter implements MainContract.Presenter {
             e.printStackTrace();
         }
 
-        List<String> listTitle = idList;
-        List<String> listContent = lectureList;
-//        List<String> listContent = Arrays.asList("이 꽃은 국화입니다.", "여기는 사막입니다.", "이 꽃은 수국입니다.");
+//        List<String> listTitle = idList;
+//        List<String> listContent = lectureList;
+        List<String> listTitle = Arrays.asList("알고리즘3", "알고리즘2", "알고리즘1", "자바스크립트2", "자바스크립트1");
+        List<String> listContent = Arrays.asList("출석", "출석", "지각", "출석", "출석");
 
         for (int i = 0; i < listTitle.size(); i++) {
             Data data = new Data();

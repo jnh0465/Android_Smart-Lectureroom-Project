@@ -7,17 +7,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.jiwoolee.android_smartlectureroom.model.Data;
+import com.jiwoolee.android_smartlectureroom.FragmentActivity;
 import com.jiwoolee.android_smartlectureroom.R;
 import com.jiwoolee.android_smartlectureroom.base.SharedPreferenceManager;
 import com.jiwoolee.android_smartlectureroom.base.BaseActivity;
 import com.jiwoolee.android_smartlectureroom.view.schedule.ScheduleActivity;
 import com.jiwoolee.android_smartlectureroom.view.login.LoginActivity;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.util.ArrayList;
-import java.util.List;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -35,6 +31,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         findViewById(R.id.btn_logout).setOnClickListener(this); //리스너 연결
         findViewById(R.id.imageButton3).setOnClickListener(this);
+        findViewById(R.id.imageButton4).setOnClickListener(this);
 
         boolean isFirst = SharedPreferenceManager.getToken(mContext, "PREF_FIRST");
         if (!isFirst) {                                                      //최초 실행시
@@ -57,6 +54,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             SharedPreferenceManager.clear(mContext);
         }else if(i==R.id.imageButton3){
             Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
+            startActivity(intent);
+        }else if(i==R.id.imageButton4){
+            Intent intent = new Intent(MainActivity.this, FragmentActivity.class);
             startActivity(intent);
         }
     }
