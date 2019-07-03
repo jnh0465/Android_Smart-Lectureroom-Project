@@ -1,30 +1,26 @@
 package com.jiwoolee.android_smartlectureroom.view.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-
 import com.jiwoolee.android_smartlectureroom.R
 import com.jiwoolee.android_smartlectureroom.base.RecyclerviewAdapter
 import com.jiwoolee.android_smartlectureroom.model.Data
-import com.jiwoolee.android_smartlectureroom.model.IMyService
-
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
-
 import java.util.ArrayList
-import java.util.Arrays
-
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import io.reactivex.disposables.CompositeDisposable
+import com.jiwoolee.android_smartlectureroom.base.SharedPreferenceManager
+import com.jiwoolee.android_smartlectureroom.view.login.LoginActivity
+import com.jiwoolee.android_smartlectureroom.view.main.FragmentActivity.Companion.mContext
 
-class Fragment_Home : Fragment() {
+class HomeFragment : Fragment(), View.OnClickListener {
     internal var viewPager: ViewPager? = null
     private var adapter: RecyclerviewAdapter? = null
     private val idList = ArrayList<String>()
@@ -37,12 +33,23 @@ class Fragment_Home : Fragment() {
         val btnLogout = view.findViewById<View>(R.id.btn_logout) as ImageButton
         val recyclerView = view.findViewById<View>(R.id.recyclerview) as RecyclerView
         setRecyclerview(recyclerView)
+        btnLogout.setOnClickListener(this)
 
         return view
     }
 
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.btn_logout -> {
+                val intent = Intent(LoginActivity.mContext, LoginActivity::class.java)
+                startActivity(intent)
+                SharedPreferenceManager.clear(mContext)
+            }
+        }
+    }
+
     private fun setRecyclerview(recyclerview: RecyclerView) { /////////수정 및 분리 예정
-        val linearLayoutManager = LinearLayoutManager(FragmentActivity.mContext)
+        val linearLayoutManager = LinearLayoutManager(mContext)
         recyclerview.layoutManager = linearLayoutManager
 
         adapter = RecyclerviewAdapter()
@@ -77,4 +84,5 @@ class Fragment_Home : Fragment() {
         }
         adapter!!.notifyDataSetChanged()
     }
+
 }

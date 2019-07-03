@@ -14,11 +14,13 @@ import android.widget.TextView
 
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
 import com.jiwoolee.android_smartlectureroom.R
+import com.jiwoolee.android_smartlectureroom.view.login.LoginActivity
 
+@Suppress("DEPRECATION")
 open class BaseActivity : AppCompatActivity() {
     private var mProgressDialog: ProgressDialog? = null
 
-    fun showProgressDialog() {
+    fun showProgressDialog() { //프로그래스바
         if (mProgressDialog == null) {
             mProgressDialog = ProgressDialog(this, R.style.myDialog)
             mProgressDialog!!.addContentView(ProgressBar(this),
@@ -38,26 +40,6 @@ open class BaseActivity : AppCompatActivity() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
-//    fun materialDialog(presenter: LoginPresenter) {
-//        val registerLayout = LayoutInflater.from(LoginActivity.mContext).inflate(R.layout.findpw_layout, null)
-//        MaterialStyledDialog.Builder(LoginActivity.mContext)
-//                .setTitle("FIND PASSWORD")
-//                .setCustomView(registerLayout)
-//                .setNegativeText("CANSEL")
-//                .onNegative { dialog, which -> dialog.dismiss() }
-//                .setPositiveText("SEND")
-//                .onPositive { dialog, which ->
-//                    val registerId = registerLayout.findViewById<TextView>(R.id.edit_id)
-//                    val registerPw = registerLayout.findViewById<TextView>(R.id.edit_password)
-//                    val registerPw2 = registerLayout.findViewById<TextView>(R.id.edit_password2)
-//
-//                    val test = presenter.validateForm(registerId, registerPw) //폼 채움 여부 확인
-//                    if (test && registerPw === registerPw2) {
-//                        presenter.findPassword(registerId.text.toString(), registerPw.text.toString())
-//                    }
-//                }.show()
-//    }
 
     public override fun onStop() {
         super.onStop()

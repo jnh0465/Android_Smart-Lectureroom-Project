@@ -193,7 +193,7 @@ module.exports = {
 
     getScheduleProcess : (userInfo, callback)=>{
     const id = userInfo.student_id;
-    var toAndroid=[];
+    var info_temp=[];
 
     const queryObject = {"student_id":{"$in":[id]}}; //몽고디비 쿼리 내용
     mongoDB.getLectureInfo_student(queryObject)
@@ -205,38 +205,30 @@ module.exports = {
 
             let lecture_info = lecture[j].lecture_info[k]; //강의정보
             let day= lecture_info.lecture_time.substr(0,1); // ex) 월2 -> 월  , 2
-            // if(day=="월"){
-            //   day=1;
-            // }
             let time = lecture_info.lecture_time.substr(1,1);
 
             let lecture_room = lecture_info.lectureroom; //강의장소
             let building = lecture_room.building_name+" "+lecture_room.lectureroom_num;
 
-            // console.log(day+","+time+","+lecture_name+","+building);
-
-            // toAndroid.push(day+","+time+","+lecture_name+","+building+"\n");
             if(day=="월"){
-              day=0;
-            }else if(day=="화"){
               day=1;
-            }else if(day=="수"){
+            }else if(day=="화"){
               day=2;
-            }else if(day=="목"){
+            }else if(day=="수"){
               day=3;
-            }else if(day=="금"){
+            }else if(day=="목"){
               day=4;
+            }else if(day=="금"){
+              day=5;
             }
-
-            toAndroid.push("a"+day+","+time+","+lecture_name+","+building+"a");
-
+            info_temp.push("a"+day+","+time+","+lecture_name+","+building+","+lecture_id+"a");
           }
         }
         console.log(toAndroid);
 
         let result={
             STATE : "SUCCESS",
-            DETAIL : toAndroid
+            DETAIL : info_temp
 
             /*
             //DETAIL : content //쿼리내용 끌고갑니다아아

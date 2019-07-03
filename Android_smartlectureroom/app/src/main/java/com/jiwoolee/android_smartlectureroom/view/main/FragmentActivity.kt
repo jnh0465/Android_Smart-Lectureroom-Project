@@ -8,7 +8,7 @@ import android.widget.Toast
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
-import com.jiwoolee.android_smartlectureroom.Fragment_Third
+import com.jiwoolee.android_smartlectureroom.ThirdFragment
 import com.jiwoolee.android_smartlectureroom.R
 import com.jiwoolee.android_smartlectureroom.base.FragmentAdapter
 import com.jiwoolee.android_smartlectureroom.base.SharedPreferenceManager
@@ -24,8 +24,9 @@ import retrofit2.Retrofit
 class FragmentActivity : AppCompatActivity() {
     private val TOPIC = "send" //fcm firebase 토픽 선언
 
-    private var disposable: CompositeDisposable? = null
-    private var iMyService: IMyService? = null
+    private var disposable: CompositeDisposable? = CompositeDisposable()
+    private val retrofitClient = RetrofitClient.getInstance()
+    private var iMyService: IMyService? = (retrofitClient as Retrofit).create(IMyService::class.java)
 
     private var mViewPager: ViewPager? = null
     private var adapter = FragmentAdapter(supportFragmentManager)
@@ -38,17 +39,13 @@ class FragmentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
+        mContext = this
+
         mViewPager = findViewById<View>(R.id.container) as ViewPager
         setupViewPager(mViewPager)
 
         val tabLayout = findViewById<View>(R.id.tabs) as TabLayout
         tabLayout.setupWithViewPager(mViewPager)
-
-        mContext = this
-
-        disposable = CompositeDisposable()
-        val retrofitClient = RetrofitClient.getInstance()
-        iMyService = (retrofitClient as Retrofit).create(IMyService::class.java)
 
         val isFirst = SharedPreferenceManager.getToken(mContext, "PREFFIRST")
         if (!isFirst) {                                                      //최초 실행시
@@ -70,12 +67,11 @@ class FragmentActivity : AppCompatActivity() {
     }
 
     private fun setupViewPager(viewPager: ViewPager?) {
-        adapter.addFragment(Fragment_Home(), "홈")
-        adapter.addFragment(Fragment_Schedule(), "시간표")
-        adapter.addFragment(Fragment_Third(), "?")
+        adapter.addFragment(HomeFragment(), "홈")
+        adapter.addFragment(ScheduleFragment(), "시간표")
+        adapter.addFragment(ThirdFragment(), "?")
         viewPager!!.adapter = adapter
     }
-
 
     private fun tokenUpdate() {
         android.os.Handler().postDelayed(

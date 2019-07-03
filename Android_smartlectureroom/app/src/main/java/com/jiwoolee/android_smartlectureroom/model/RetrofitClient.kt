@@ -8,7 +8,7 @@ object RetrofitClient {
     private var instance: Retrofit? = null
     fun getInstance(): Retrofit? {
         if (instance == null) {
-            instance = Retrofit.Builder().baseUrl("http://10.0.2.2:3000/")
+            instance = Retrofit.Builder().baseUrl("http://192.168.195.108:3000/")
                     //http://localhost:3000/
                     //http://10.0.2.2:3000/ 에뮬레이터
                     .addConverterFactory(ScalarsConverterFactory.create())
