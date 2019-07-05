@@ -195,7 +195,20 @@ function buildQueryPack(docsPack){
        });
     });
  }
- 
+
+ function deleteAttend(deleteObject){
+    return new Promise((resolve, reject)=>{
+        const attend = db.collection('TB_ATTEND');
+        attend.deleteMany(deleteObject, function(error, res){
+            console.log("------------------");
+            console.log("deleteAttend 삭제할 내용");
+            console.log("쿼리 : " + JSON.stringify(deleteObject));
+            console.log("------------------");
+            resolve();
+        })
+    });
+}
+
  module.exports = {
     buildQueryPack : buildQueryPack,
     setQueryPack : setQueryPack,
@@ -207,5 +220,6 @@ function buildQueryPack(docsPack){
     insertStudent : insertStudent,
     updateStudent : updateStudent,
     insertAttend : insertAttend,
-    queryAttend : queryAttend
+    queryAttend : queryAttend,
+    deleteAttend : deleteAttend
 }

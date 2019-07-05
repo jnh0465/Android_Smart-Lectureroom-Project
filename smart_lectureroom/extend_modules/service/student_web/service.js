@@ -194,6 +194,8 @@ module.exports = {
     getScheduleProcess : (userInfo, callback)=>{
     const id = userInfo.student_id;
     var info_temp=[];
+    var testList = [] ;
+    var data = new Object() ;
 
     const queryObject = {"student_id":{"$in":[id]}}; //몽고디비 쿼리 내용
     mongoDB.getLectureInfo_student(queryObject)
@@ -201,10 +203,11 @@ module.exports = {
       const lecture = content.lecture;
       for(let j=0; j<lecture.length; j++){
         for(let k=0; k<lecture[j].lecture_info.length; k++){
+            let lecture_id = lecture[j].lecture_id; //강의id
             let lecture_name = lecture[j].lecture_name; //강의명
 
             let lecture_info = lecture[j].lecture_info[k]; //강의정보
-            let day= lecture_info.lecture_time.substr(0,1); // ex) 월2 -> 월  , 2
+            let day = lecture_info.lecture_time.substr(0,1); // ex) 월2 -> 월  , 2
             let time = lecture_info.lecture_time.substr(1,1);
 
             let lecture_room = lecture_info.lectureroom; //강의장소
@@ -265,5 +268,26 @@ module.exports = {
         callback(result);
     })
     .catch((err)=>{console.log(err);});
-  }
+  },
+
+    getAttendStateProcess : (userInfo, callback)=>{
+    const id = userInfo.student_id;
+    var info_temp=[], testList = [];
+    var data = new Object() ;
+
+    const queryObject = {"student_id":{"$in":[id]}}; //몽고디비 쿼리 내용
+    mongoDB.getAttendState(queryObject)
+    .then((content)=>{
+        const attend = content.attend;
+
+        console.log("777777777777777"+JSON.stringify(attend))
+        let result={
+            STATE : "SUCCESS",
+            DETAIL : attend
+        };
+
+        callback(result);
+    })
+    .catch((err)=>{console.log(err);});
+}
 }

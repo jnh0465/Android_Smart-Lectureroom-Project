@@ -5,12 +5,15 @@ var baseDBFunction = require('../baseDBFunction'); //mongoDB 관련 커스텀함
         const queryPack = baseDBFunction.setQueryPack(queryObject,{});
         return baseDBFunction.queryStudent(queryPack);
     },
+
     insertStudent : (insertObject)=>{
         return baseDBFunction.insertStudent(insertObject);
     },
+
     updateStudent : (updateObject)=>{
         return baseDBFunction.updateStudent(updateObject);
     },
+
     getLectureInfo_student : (queryObject) =>{
     const queryPack = baseDBFunction.setQueryPack(queryObject,{});
     return baseDBFunction.queryStudent(queryPack)
@@ -82,5 +85,89 @@ var baseDBFunction = require('../baseDBFunction'); //mongoDB 관련 커스텀함
                 });
 
             });
-          }
+          },
+
+    getAttendState : (queryObject) =>{
+      const queryPack = baseDBFunction.setQueryPack(queryObject,{});
+      let id;
+      let content={
+          attend : [],
+          lecture : [],
+          id : []
+      };
+      let object_attend = {
+          lecture_id : [],
+          lecture_session : [],
+          attend_state : [],
+          lecture_name : []
+      }
+
+      return baseDBFunction.queryStudent(queryPack)
+              .then((docsPack)=>{
+                  return new Promise((resolve, reject)=>{
+                      const docs = docsPack.docs;
+                      id = docs[0].student_id;
+
+                      docsPack.queryObject = {"lecture_id":{"$in": docs[0].lecture_list}};
+                      resolve(docsPack);
+                  });
+              })
+              .then(baseDBFunction.buildQueryPack)
+              .then(baseDBFunction.queryAttend)
+              .then((docsPack)=>{
+                  return new Promise((resolve, reject)=>{
+                      const docs = docsPack.docs;
+                      const docsObject = docsPack.docsObject;
+                      const queryAttend = docsObject.queryAttend;
+
+                      let attend = queryAttend;
+                      for(let j=0; j<attend.length; j++){
+                        let lecture_id = attend[j].lecture_id; //강의 id
+                        content.id.push(lecture_id);
+                      }
+
+                      docsPack.queryObject = {"lecture_id":{"$in": content.id}};
+                      resolve(docsPack);
+                  });
+                })
+                .then(baseDBFunction.queryLecture)
+                .then((docsPack)=>{
+                    return new Promise((resolve,reject)=>{
+                      const docs = docsPack.docs;
+                      const docsObject = docsPack.docsObject;
+
+                      const queryStudentByID = docsObject.queryStudentByID;
+                      const queryLectureByID = docsObject.queryLectureByID;
+                      const queryAttend = docsObject.queryAttend;
+
+                      let attend = queryAttend;
+                      for(let j=0; j<attend.length; j++){
+                        let lecture_id = attend[j].lecture_id; //강의 id
+                        let attend_info = attend[j].attend_info;
+                        for(let k=0; k<attend_info.length; k++){
+                          let attendence = attend_info[k].attendence;
+
+                          for(let l=0; l<attendence.length; l++){
+                            let attend_studentID = attendence[l].student_id;
+                            if(id === attend_studentID ){
+                              let attend_state = attendence[l].attend_state; //출석상태
+                              let lecture_session = attendence[l].lecture_session; //수업차시
+
+                              object_attend.lecture_id.push(lecture_id);
+                              object_attend.lecture_session.push(lecture_session);
+                              object_attend.attend_state.push(attend_state);
+                            }
+                          }
+                        }
+                      }
+
+                      for(let i=0; i<queryLectureByID.length; i++){
+                          object_attend.lecture_name.push(queryLectureByID[i].lecture_name);
+                      }
+                      content.attend.push(object_attend);
+
+                      resolve(content);
+                  });
+                })
+              }
  }
