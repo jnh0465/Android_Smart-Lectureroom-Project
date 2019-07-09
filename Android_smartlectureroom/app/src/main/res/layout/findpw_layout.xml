@@ -12,7 +12,7 @@
         android:layout_marginTop="10dp">
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edit_id"
+            android:id="@+id/tv_findpw_editid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="학번" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edit_password"
+            android:id="@+id/tv_findpw_editpw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="비밀번호"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edit_password2"
+            android:id="@+id/tv_findpw_editpw2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="비밀번호 확인"

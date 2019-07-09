@@ -25,4 +25,8 @@ interface IMyService {
     @POST("student/process/getScheduleProcess")
     @FormUrlEncoded
     fun getSchedule(@Field("student_id") email: String): Observable<String>
+
+    @POST("student/process/getAttendStateProcess")
+    @FormUrlEncoded
+    fun getAttendStateProcess(@Field("student_id") email: String): Observable<String>
 }

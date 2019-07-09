@@ -26,6 +26,7 @@
 
         <activity android:name=".view.main.FragmentActivity"/>
         <activity android:name=".base.BaseActivity"/>
+        <activity android:name=".view.SettingActivity"/>
 
         <service
             android:name=".FCM.MyFirebaseMessagingService"

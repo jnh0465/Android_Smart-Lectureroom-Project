@@ -5,47 +5,47 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.google.android.material.tabs.TabLayout
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
-import com.jiwoolee.android_smartlectureroom.ThirdFragment
 import com.jiwoolee.android_smartlectureroom.R
-import com.jiwoolee.android_smartlectureroom.base.FragmentAdapter
 import com.jiwoolee.android_smartlectureroom.base.SharedPreferenceManager
 import com.jiwoolee.android_smartlectureroom.model.IMyService
 import com.jiwoolee.android_smartlectureroom.model.RetrofitClient
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.jiwoolee.android_smartlectureroom.base.FragmentStatePagerAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_fragment.*
+import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Retrofit
 
-class FragmentActivity : AppCompatActivity() {
+class FragmentActivity : AppCompatActivity(), View.OnClickListener {
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        lateinit var mContext: Context
+    }
+
     private val TOPIC = "send" //fcm firebase 토픽 선언
 
     private var disposable: CompositeDisposable? = CompositeDisposable()
     private val retrofitClient = RetrofitClient.getInstance()
     private var iMyService: IMyService? = (retrofitClient as Retrofit).create(IMyService::class.java)
-
-    private var mViewPager: ViewPager? = null
-    private var adapter = FragmentAdapter(supportFragmentManager)
-
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        lateinit var mContext: Context
-    }
+    val fragmentAdapter: FragmentStatePagerAdapter by lazy { FragmentStatePagerAdapter(3, supportFragmentManager) }    // MainAdapter를 생성
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
         mContext = this
 
-        mViewPager = findViewById<View>(R.id.container) as ViewPager
-        setupViewPager(mViewPager)
+        fragment_container.adapter = fragmentAdapter
+        fragment_container.offscreenPageLimit = 3 // PageLimit 지정
 
-        val tabLayout = findViewById<View>(R.id.tabs) as TabLayout
-        tabLayout.setupWithViewPager(mViewPager)
+        btn_homefragment.setOnClickListener(this) //리스너 연결
+        btn_schedulefragment.setOnClickListener(this)
+        btn_third.setOnClickListener(this)
 
         val isFirst = SharedPreferenceManager.getToken(mContext, "PREFFIRST")
         if (!isFirst) {                                                      //최초 실행시
@@ -55,22 +55,20 @@ class FragmentActivity : AppCompatActivity() {
         }
     }
 
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.btn_homefragment -> fragment_container.currentItem = 0
+            R.id.btn_schedulefragment -> fragment_container.currentItem = 1
+            R.id.btn_third -> fragment_container.currentItem = 2
+        }
+    }
+
     private fun getToken() {
         FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener(this@FragmentActivity) { instanceIdResult ->
             val token = instanceIdResult.token  //토큰 생성
             SharedPreferenceManager.setString(mContext, "PREFTOKEN", token)
         }
         FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)  //알림허용
-    }
-
-    override fun onBackPressed() { //뒤로가기 막기
-    }
-
-    private fun setupViewPager(viewPager: ViewPager?) {
-        adapter.addFragment(HomeFragment(), "홈")
-        adapter.addFragment(ScheduleFragment(), "시간표")
-        adapter.addFragment(ThirdFragment(), "?")
-        viewPager!!.adapter = adapter
     }
 
     private fun tokenUpdate() {
@@ -102,4 +100,16 @@ class FragmentActivity : AppCompatActivity() {
                 }
         )
     }
+
+    open fun getAttendStateProcess() {
+        disposable!!.add(iMyService!!.getAttendStateProcess(SharedPreferenceManager.getString(mContext, "PREFID")!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { response ->
+                    SharedPreferenceManager.setString(mContext, "PREFAS", response)
+                }
+        )
+    }
+
+    override fun onBackPressed() { } //뒤로가기 막기
 }

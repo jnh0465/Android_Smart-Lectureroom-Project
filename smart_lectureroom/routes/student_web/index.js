@@ -82,13 +82,15 @@ router.post('/process/loginProcess', function(req, res, next) {
   service.loginProcess(userInfo, (result)=>{
     const STATE = result.STATE;
     const DETAIL = result.DETAIL;
+    const STUDENTNAME = result.STUDENTNAME; //////////
+
     if(STATE ==="SUCCESS"){
       req.session.user = { //로그인 세션 생성
         id : result.data.id,
         name : result.data.name
       }
       console.log("세션생성 : " + req.session.user.id);
-      res.json(1); //로그인 성공
+      res.json(STUDENTNAME); //로그인 성공
     }
     if(STATE ==="ERR") {
       if(DETAIL ==="EMPTY_ID"){

@@ -31,8 +31,8 @@ class RecyclerviewAdapter : RecyclerView.Adapter<RecyclerviewAdapter.MyViewHolde
 
     class MyViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal fun onBind(data: Data) {
-            itemView.textView1.text = data.title
-            itemView.textView2.text = data.content
+            itemView.tv_recyclerview_title.text = data.title
+            itemView.tv_recyclerview_content.text = data.content
         }
     }
 }

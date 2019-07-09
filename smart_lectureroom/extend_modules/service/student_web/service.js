@@ -69,7 +69,8 @@ module.exports = {
             const amount = docs.length;
             let result={
                 STATE : "SUCCESS",
-                DETAIL : "SUCCESS_LOGIN"
+                DETAIL : "SUCCESS_LOGIN",
+                STUDENTNAME : docs[0].student_name
             };
             if(amount===1){ //회원가입된 아이디
                 const student = docs[0];
@@ -227,7 +228,6 @@ module.exports = {
             info_temp.push("a"+day+","+time+","+lecture_name+","+building+","+lecture_id+"a");
           }
         }
-        console.log(toAndroid);
 
         let result={
             STATE : "SUCCESS",

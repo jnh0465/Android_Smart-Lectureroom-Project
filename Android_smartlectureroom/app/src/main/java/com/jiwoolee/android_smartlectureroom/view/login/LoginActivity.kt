@@ -13,9 +13,7 @@ import com.jiwoolee.android_smartlectureroom.base.BaseActivity
 import com.jiwoolee.android_smartlectureroom.base.SharedPreferenceManager
 import com.jiwoolee.android_smartlectureroom.view.main.FragmentActivity
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_login.edit_id
-import kotlinx.android.synthetic.main.activity_login.edit_password
-import kotlinx.android.synthetic.main.findpw_layout.*
+
 
 class LoginActivity : BaseActivity(), LoginContract.View, View.OnClickListener {
     private val presenter = LoginPresenter() 
@@ -33,20 +31,20 @@ class LoginActivity : BaseActivity(), LoginContract.View, View.OnClickListener {
         presenter.setView(this) // presenter 연결
 
         btn_login.setOnClickListener(this) //리스너 연결
-        text_findpw.setOnClickListener(this)
-        autologin_checkBox.setOnCheckedChangeListener(onCheckedChangeListener)
+        tv_findpw.setOnClickListener(this)
+        chk_autologin.setOnCheckedChangeListener(onCheckedChangeListener)
 
-        autologin_checkBox!!.isChecked = SharedPreferenceManager.getBoolean(mContext, "PREFCB") //checkbox 상태 저장
+        chk_autologin!!.isChecked = SharedPreferenceManager.getBoolean(mContext, "PREFCB") //checkbox 상태 저장
     }
 
     //listener//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onClick(v: View) { //버튼클릭시
         when (v.id) {
             R.id.btn_login -> {
-                val test = presenter.validateForm(edit_id, edit_password) //폼 채움 여부 확인
-                if (test)  presenter.loginUser(edit_id.text.toString(), edit_password.text.toString()) //로그인
+                val test = presenter.validateForm(tv_editid, tv_editpw) //폼 채움 여부 확인
+                if (test)  presenter.loginUser(tv_editid.text.toString(), tv_editpw.text.toString()) //로그인
             }
-            R.id.text_findpw -> materialDialog() //비밀번호 찾기
+//            R.id.tv_findpw -> materialDialog() //비밀번호 찾기
         }
     }
 
@@ -66,20 +64,20 @@ class LoginActivity : BaseActivity(), LoginContract.View, View.OnClickListener {
             presenter.loginUser(studentId, studentPw) //로그인
         }
     }
-
-    private fun materialDialog() {
-        val registerLayout = LayoutInflater.from(mContext).inflate(R.layout.findpw_layout, null)
-        MaterialStyledDialog.Builder(mContext)
-                .setTitle("FIND PASSWORD")
-                .setCustomView(registerLayout)
-                .setNegativeText("CANSEL")
-                .onNegative { dialog, which -> dialog.dismiss() }
-                .setPositiveText("SEND")
-                .onPositive { dialog, which ->
-                    val test = presenter.validateForm(edit_id, edit_password) //폼 채움 여부 확인
-                    if (test && edit_password === edit_password2) presenter.findPassword(edit_id.text.toString(), edit_password.text.toString())
-                }.show()
-    }
+//
+//    private fun materialDialog() {
+//        val registerLayout = LayoutInflater.from(mContext).inflate(R.layout.findpw_layout, null)
+//        MaterialStyledDialog.Builder(mContext)
+//                .setTitle("FIND PASSWORD")
+//                .setCustomView(registerLayout)
+//                .setNegativeText("CANSEL")
+//                .onNegative { dialog, which -> dialog.dismiss() }
+//                .setPositiveText("SEND")
+//                .onPositive { dialog, which ->
+//                    val test = presenter.validateForm(edit_id, edit_password) //폼 채움 여부 확인
+//                    if (test && edit_password === edit_password2) presenter.findPassword(edit_id.text.toString(), edit_password.text.toString())
+//                }.show()
+//    }
 
     override fun startActivity() {
         val intent = Intent(mContext, FragmentActivity::class.java)
