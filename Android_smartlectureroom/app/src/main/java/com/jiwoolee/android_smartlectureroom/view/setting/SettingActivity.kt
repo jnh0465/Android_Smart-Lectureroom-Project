@@ -1,4 +1,4 @@
-package com.jiwoolee.android_smartlectureroom.view
+package com.jiwoolee.android_smartlectureroom.view.setting
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -32,7 +32,7 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener  {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_logout -> {
-                val intent = Intent(SettingActivity.mContext, LoginActivity::class.java)
+                val intent = Intent(mContext, LoginActivity::class.java)
                 startActivity(intent)
                 SharedPreferenceManager.clear(FragmentActivity.mContext)
             }
