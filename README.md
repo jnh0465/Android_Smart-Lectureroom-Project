@@ -1,7 +1,7 @@
 # Android_Smart-Lectureroom-Project
 1906018- / Android(kotlin) + Node.js + mongoDB
 
-<img src="https://user-images.githubusercontent.com/38582562/61259882-11bd8e80-a7b7-11e9-881f-87d81eb3ea17.gif" width="32%">
+<img src="https://user-images.githubusercontent.com/38582562/61259882-11bd8e80-a7b7-11e9-881f-87d81eb3ea17.gif" width="32%">    <img src="https://user-images.githubusercontent.com/38582562/61461400-907b1d00-a9ab-11e9-8667-e2ad0d4d3883.gif" width="67%">
 
 `기능 : `   
 ~~~
@@ -13,7 +13,7 @@
 - HomeFragment              / fcm 토큰 설정 및 서버로 전송, Recyclerview를 이용한 출석로그 구현
 - ScheduleFragment          / 데이터 정제해 시간표 구현
 - ThirdFragment             / (미정)
-- SettingActivity           / 사진수정, 
+- SettingActivity           / 사진수정, node.js폴더로 사진전송
 ~~~
 
 `아쉬운 점 : `   
