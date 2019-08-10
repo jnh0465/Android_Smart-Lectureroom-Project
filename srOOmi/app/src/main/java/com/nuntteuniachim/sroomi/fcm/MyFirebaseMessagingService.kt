@@ -1,5 +1,6 @@
 package com.nuntteuniachim.sroomi.fcm
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,32 +10,53 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.fragment.app.FragmentActivity
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.nuntteuniachim.sroomi.view.AttendRequestActivity
 import com.nuntteuniachim.sroomi.R
-import com.nuntteuniachim.sroomi.view.main.FragmentActivity
+import com.nuntteuniachim.sroomi.base.SharedPreferenceManager
 
-//fcm 푸시
+// FCM 푸시
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-    override fun onNewToken(mToken: String?) {     //토큰
-        super.onNewToken(mToken)
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        lateinit var mContext: Context
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         super.onMessageReceived(remoteMessage)
         PushUtils.acquireWakeLock(this) //푸시알림시 화면깨우기
 
-        sendNotificationAlert(remoteMessage!!.data["title"], remoteMessage.data["body"])
+        mContext=this
+        SharedPreferenceManager.setString(mContext, "PREFATTEND", remoteMessage!!.data["content"].toString())
 
+        sendNotificationRequest(remoteMessage.data["title"], remoteMessage.data["body"], remoteMessage.data["clickAction"])
 
         FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { instanceIdResult -> val deviceToken = instanceIdResult.token }
     }
 
-    private fun sendNotificationAlert(title: String?, body: String?) {
+    private fun sendNotificationRequest(title: String?, body: String?, click_action: String?) {
         PushUtils.releaseWakeLock() //푸시알림시 화면깨우기
-        val intent = Intent(this, FragmentActivity::class.java)
+        val intent: Intent
+        when { //clickAction 분기처리
+            click_action.equals("MainActivity") -> {
+                intent = Intent(this, FragmentActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            click_action.equals("AttendRequestActivity") -> {
+                intent = Intent(this, AttendRequestActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            else -> {
+                intent = Intent(this, FragmentActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT)
 
@@ -42,13 +64,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("오투미_$title")                                               //타이틀
-                .setContentText(body)                                                           //텍스트
+                .setContentTitle("$title")                                               //타이틀
+                .setContentText("$body")                            //텍스트
+
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setVibrate(longArrayOf(100, 0, 100, 0))
                 .setContentIntent(pendingIntent)
+                .setPriority(Notification.PRIORITY_MAX)
+
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -61,9 +86,5 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
-    }
-
-    companion object {
-        private val TAG = "MyFirebaseMsgService"
     }
 }

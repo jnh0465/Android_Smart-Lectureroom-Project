@@ -53,7 +53,7 @@
         android:id="@+id/btn_editpicture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="사진 수정" />
+        android:text="사진 등록/수정" />
 
     <Button
         android:id="@+id/btn_logout"

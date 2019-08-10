@@ -8,7 +8,9 @@ import com.nuntteuniachim.sroomi.view.main.ThirdFragment
 import com.nuntteuniachim.sroomi.view.main.HomeFragment
 import com.nuntteuniachim.sroomi.view.main.ScheduleFragment
 
-class FragmentStatePagerAdapter(var fragNum : Int, fm : FragmentManager) : FragmentStatePagerAdapter(fm) {
+// FragmentActivity 어댑터
+
+class FragmentStatePagerAdapter(var fragNum: Int, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment? {
         return when (position) {

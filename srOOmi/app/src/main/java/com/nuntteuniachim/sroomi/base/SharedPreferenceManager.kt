@@ -9,7 +9,7 @@ object SharedPreferenceManager {
     private const val PREFERENCES_NAME = "rebuild_preference"
     private const val DEFAULT_VALUE_STRING = ""
     private const val DEFAULT_VALUE_BOOLEAN = false
-    private const val DEFAULT_VALUE_Int= 0
+    private const val DEFAULT_VALUE_Int = 0
 
     private fun getPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)

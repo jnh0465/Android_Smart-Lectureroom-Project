@@ -11,10 +11,21 @@ import com.nuntteuniachim.sroomi.base.SharedPreferenceManager
 import java.util.ArrayList
 import androidx.fragment.app.Fragment
 import com.nuntteuniachim.sroomi.R
+import com.nuntteuniachim.sroomi.retrofit.IMyService
+import com.nuntteuniachim.sroomi.retrofit.RetrofitClient
 import com.nuntteuniachim.sroomi.view.main.FragmentActivity.Companion.mContext
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import retrofit2.Retrofit
 
-class ScheduleFragment : Fragment(), FragmentContract.View {
-    private val presenter = FragmentPresenter()
+class ScheduleFragment : Fragment() {
+    private var disposable: CompositeDisposable? = CompositeDisposable()  //retrofit 통신
+    private var retrofitClient = RetrofitClient.getInstance()
+    private var iMyService: IMyService? = (retrofitClient as Retrofit).create(IMyService::class.java)
+
+    private var tv = arrayOfNulls<TextView>(100)
+    private val color: Array<Int> = arrayOf(Color.rgb(230, 230, 250), Color.rgb(255, 228, 225), Color.rgb(240, 255, 255), Color.rgb(240, 255, 240), Color.rgb(255, 250, 205))
 
     private var dayList: ArrayList<String> = ArrayList() //ArrayList 정의
     private var timeList: ArrayList<String> = ArrayList()
@@ -23,21 +34,17 @@ class ScheduleFragment : Fragment(), FragmentContract.View {
     private var lectureroomList: ArrayList<String> = ArrayList()
     private var scheduleList: ArrayList<String> = ArrayList()
 
-    private var tv = arrayOfNulls<TextView>(100)
-    private val color: Array<Int> = arrayOf(Color.rgb(230, 230, 250), Color.rgb(255, 228, 225), Color.rgb(240, 255, 255), Color.rgb(240, 255, 240), Color.rgb(255, 250, 205))
-
     override fun onResume() {
         super.onResume()
-        presenter.getSchedule()
+        getSchedule() //시간표 데이터 가져오기
     }
 
     @SuppressLint("ResourceAsColor")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_schedule, container, false)
-        presenter.setView(this) //presenter 연결
 
-        var listSize = refineScheduledata()
-        initKeyvalue()
+        var listSize = refineScheduledata() //시간표 데이터 정제
+        initKeyvalue() //키값 초기화
 
         // 현재 인덱스의 요일과 다음 인덱스의 요일이 같고, 현재 인덱스의 시간+1이 다음 인덱스의 시간과 같으면 연강으로 인식하도록
         // 코드를 작성하려 했으나 if(scheduleList[i+1] 이 작동하지 않아 SharedPreferenceManager사용
@@ -64,6 +71,18 @@ class ScheduleFragment : Fragment(), FragmentContract.View {
         return view
     }
 
+    //시간표 데이터 가져오기
+    private fun getSchedule(){
+        disposable!!.add(iMyService!!.getSchedule(SharedPreferenceManager.getString(FragmentActivity.mContext, "PREFID")!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { response ->
+                    SharedPreferenceManager.setString(FragmentActivity.mContext, "PREFSC", response)
+                }
+        )
+    }
+    
+    //시간표 데이터 정제
     private fun refineScheduledata(): Int {
         val str: String = SharedPreferenceManager.getString(FragmentActivity.mContext, "PREFSC").toString() //node서버에서 받아온 값 저장
         val array = str.split("a")
@@ -81,15 +100,14 @@ class ScheduleFragment : Fragment(), FragmentContract.View {
         return dayList.size
     }
 
+    //키값 초기화
     private fun initKeyvalue(){
-        SharedPreferenceManager.removeKey(mContext, "PREFDAY") //키값 초기화
+        SharedPreferenceManager.removeKey(mContext, "PREFDAY")
         SharedPreferenceManager.removeKey(mContext, "PREFTIME")
     }
 
-
-    private fun getId(id: String): Int { //textview의 id받아오기
+    //textview의 id받아오기
+    private fun getId(id: String): Int {
         return resources.getIdentifier("text_$id", "id", "com.nuntteuniachim.sroomi") /////////////////////
     }
-
-    override fun getToken() {}
 }
