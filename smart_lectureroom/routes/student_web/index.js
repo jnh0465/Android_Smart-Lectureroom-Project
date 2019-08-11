@@ -9,6 +9,10 @@ const webName = "student_web";
 const viewPath = "student_web/page";
 const templatePath = "student_web/template";
 
+var multer, storage, path, crypto;
+multer = require('multer')
+path = require('path');
+crypto = require('crypto');
 
 /* 안드로이드 요청 */
 
@@ -79,6 +83,7 @@ router.post('/process/getTokenProcess', function(req, res, next) {
 //로그인
 router.post('/process/loginProcess', function(req, res, next) {
   const userInfo = req.body;
+
   service.loginProcess(userInfo, (result)=>{
     const STATE = result.STATE;
     const DETAIL = result.DETAIL;
@@ -110,7 +115,7 @@ router.post('/process/loginProcess', function(req, res, next) {
   });
 });
 
-//로그
+//시간표
 router.post('/process/getScheduleProcess', function(req, res, next) {
   const userInfo = req.body;
 
@@ -118,13 +123,12 @@ router.post('/process/getScheduleProcess', function(req, res, next) {
     const STATE = result.STATE;
     const DETAIL = result.DETAIL;
 
-    console.log ("쿼리내용 :"+ JSON.stringify (DETAIL)); //끌려왔습니다아아아ㅏ
+    // console.log ("시간표쿼리내용 :"+ JSON.stringify (DETAIL)); //끌려왔습니다아아아ㅏ
     if(STATE ==="SUCCESS"){
       res.json(JSON.stringify (DETAIL));
     }
   });
 });
-
 
 //출석상태
 router.post('/process/getAttendStateProcess', function(req, res, next) {
@@ -138,6 +142,39 @@ router.post('/process/getAttendStateProcess', function(req, res, next) {
     if(STATE ==="SUCCESS"){
       res.json(JSON.stringify (DETAIL));
     }
+  });
+});
+
+// 학생사진 업로드
+ var testid;
+  var storage = multer.diskStorage({
+    destination: './resources/images/student/',
+    filename: function(req, file, cb) {
+        return cb(null, testid+".jpg");
+  }});
+
+  router.post("/process/upload",
+    multer({
+      storage: storage
+    }).single('upload'), function(req, res) {
+      const userInfo = req.body;
+        testid = userInfo.student_id;
+      return res.status(200).end();
+  });
+
+
+// 고려해야할 푸시 타입 3가지
+// 1. late , attendStartTime 이 없는 푸시 ----> 애초에 푸시에 버튼이 없음
+// 2. 출석재요청을 위한 푸시요청 ------> 이의신청기한이 지나기전에 온것만 결과를 반영
+// 3. 출석요청을 위한 푸시요청 ------> late값과 비교하여 지각 또는 결석으로 반영
+
+router.post("/process/pushResponseProcess" , function(req, res, next){
+  const attendInfo = JSON.parse(req.body.student_attendstate);
+  // res.send({STATE : "SUCCESS" , DETAIL : "TEST"});
+  console.log ("푸시요청: "+JSON.stringify(attendInfo));
+  service.pushResponseProcess(attendInfo, (result)=>{
+    // res.send(result);
+    res.json(1);
   });
 });
 
