@@ -1,7 +1,8 @@
 package com.nuntteuniachim.sroomi.view.main
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,23 +11,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nuntteuniachim.sroomi.R
-import com.nuntteuniachim.sroomi.base.HomeRecyclerviewAdapter
+import com.nuntteuniachim.sroomi.base.AttendRecyclerviewAdapter
 import com.nuntteuniachim.sroomi.base.SharedPreferenceManager
 import com.nuntteuniachim.sroomi.retrofit.Data
 import com.nuntteuniachim.sroomi.retrofit.IMyService
 import com.nuntteuniachim.sroomi.retrofit.RetrofitClient
-import com.nuntteuniachim.sroomi.view.SettingActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
-import java.util.*
-import android.annotation.SuppressLint
-import android.widget.TextView
-import com.nuntteuniachim.sroomi.view.LoginActivity
 import java.text.SimpleDateFormat
+import java.util.*
 
-class HomeFragment : Fragment(), View.OnClickListener {
+class AttendFragment : Fragment(), View.OnClickListener {
     private var disposable: CompositeDisposable? = CompositeDisposable()  //retrofit 통신
     private var retrofitClient = RetrofitClient.getInstance()
     private var iMyService: IMyService? = (retrofitClient as Retrofit).create(IMyService::class.java)
@@ -35,8 +32,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private var attendList: ArrayList<String> = ArrayList()
     private var nameList: ArrayList<String> = ArrayList()
     private var dayList: ArrayList<String> = ArrayList()
+    private var idList: ArrayList<String> = ArrayList()
 
-    private var adapter: HomeRecyclerviewAdapter? = null
+    private var adapter: AttendRecyclerviewAdapter? = null
 
     override fun onResume() {
         super.onResume()
@@ -44,20 +42,20 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_attend, container, false)
 
-        val recyclerView = view.findViewById<View>(R.id.rec_home) as RecyclerView
-        val btnToAttend = view.findViewById<View>(R.id.btn_toattend) as ImageButton
+        val recyclerView = view.findViewById<View>(R.id.rec_attend) as RecyclerView
+        val btnToMain = view.findViewById<View>(R.id.btn_tomain) as ImageButton
 
         setRecyclerview(recyclerView) //recyclerview apdater 연결
-        btnToAttend.setOnClickListener(this)
+        btnToMain.setOnClickListener(this) //리스너
 
         return view
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btn_toattend -> (activity as FragmentActivity).toAttend()
+            R.id.btn_tomain -> (activity as FragmentActivity).toMain()
         }
     }
 
@@ -67,7 +65,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { response ->
-                    SharedPreferenceManager.setString(FragmentActivity.mContext, "PREFAS", response)
+                    SharedPreferenceManager.setString(FragmentActivity.mContext, "PREFAT", response)
                 }
         )
     }
@@ -83,20 +81,23 @@ class HomeFragment : Fragment(), View.OnClickListener {
         val linearLayoutManager = LinearLayoutManager(FragmentActivity.mContext)
         recyclerview.layoutManager = linearLayoutManager
 
-        adapter = HomeRecyclerviewAdapter()
+        adapter = AttendRecyclerviewAdapter()
         recyclerview.adapter = adapter
     }
 
     //출석 로그 데이터 정제
     @SuppressLint("SimpleDateFormat")
     private fun refineAttenddata() {
-        var str: String = SharedPreferenceManager.getString(FragmentActivity.mContext, "PREFAS").toString() //node서버에서 받아온 값 저장
+        var str: String = SharedPreferenceManager.getString(FragmentActivity.mContext, "PREFAT").toString() //node서버에서 받아온 값 저장
         str = str.replace("\\\",\\\"", "")
 
         val array = str.split("a")
 
         for (x in 1 until array.size) {
             val arrayDetail = array[x].replace("-", "/").split(",")
+            for (y in 0 until arrayDetail.size - 1 step 6) idList.add(arrayDetail[y])        //과목코드
+            Log.d("aaaaaaaaaaaaaaaaaaaaaa", idList.toString())
+
             for (y in 1 until arrayDetail.size step 6) classList.add(arrayDetail[y])        //교시
             for (y in 2 until arrayDetail.size step 6) attendList.add(arrayDetail[y])       //출결
             for (y in 3 until arrayDetail.size step 6) nameList.add(arrayDetail[y])         //과목명
@@ -109,9 +110,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 val cal = Calendar.getInstance()
                 cal.time = nDate
 
-                val dayNum = cal.get(Calendar.DAY_OF_WEEK)
-
-                when (dayNum) {
+                when (cal.get(Calendar.DAY_OF_WEEK)) {
                     1 -> day = "일"
                     2 -> day = "월"
                     3 -> day = "화"
@@ -121,15 +120,16 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     7 -> day = "토"
                 }
 
-                dayList.add(arrayDetail[y].substring(5, 10) + "(" + day + ")")
+                dayList.add(arrayDetail[y].substring(5, 10) + "(" + day + ") " + arrayDetail[y].substring(11, 16))
             }
         }
 
         for (i in classList.indices) {
             val data = Data()
+            data.subjectDay = dayList[i].substring(0, 9)
             data.subjectName = nameList[i]
-            data.subjectDay = dayList[i]
             data.subjectTime = classList[i] + "차시 "
+            data.subjectId = idList[i]
 
             when {
                 attendList[i] == "A001" -> attendList[i] = "출석"
@@ -137,15 +137,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 attendList[i] == "A003" -> attendList[i] = "결석"
             }
             data.subjectAttend = attendList[i]
+            data.subjectMinute = " (" + dayList[i].substring(9, 14) + ")"
 
-            if (adapter?.itemCount!! <= 4) { //5개까지만 로그표시
-                adapter!!.addItem(data)
-            }
+            adapter!!.addItem(data)
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        disposable?.clear()
     }
 }

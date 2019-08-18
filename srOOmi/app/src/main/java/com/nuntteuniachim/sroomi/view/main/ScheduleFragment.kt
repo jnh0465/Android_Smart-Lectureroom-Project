@@ -39,19 +39,19 @@ class ScheduleFragment : Fragment() {
         getSchedule() //시간표 데이터 가져오기
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint("ResourceAsColor", "SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_schedule, container, false)
 
-        var listSize = refineScheduledata() //시간표 데이터 정제
+        val listSize = refineScheduledata() //시간표 데이터 정제
         initKeyvalue() //키값 초기화
 
         // 현재 인덱스의 요일과 다음 인덱스의 요일이 같고, 현재 인덱스의 시간+1이 다음 인덱스의 시간과 같으면 연강으로 인식하도록
         // 코드를 작성하려 했으나 if(scheduleList[i+1] 이 작동하지 않아 SharedPreferenceManager사용
 
         for (i in 0 until listSize) {
-            var day: Int = SharedPreferenceManager.getInt(mContext, "PREFDAY") // 이전 인덱스의 값 가져오기
-            var time: Int = SharedPreferenceManager.getInt(mContext, "PREFTIME")
+            val day: Int = SharedPreferenceManager.getInt(mContext, "PREFDAY") // 이전 인덱스의 값 가져오기
+            val time: Int = SharedPreferenceManager.getInt(mContext, "PREFTIME")
 
             scheduleList.add(dayList[i] + timeList[i])
 

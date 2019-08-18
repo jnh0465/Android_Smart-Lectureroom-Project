@@ -1,46 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/border">
+        android:orientation="vertical"
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/iv_userpicture"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_person"
-            android:layout_height="50dp" />
+            android:background="@drawable/ic_person" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/iv_userpicture"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:text="username" />
 
-            <TextView
-                android:id="@+id/tv_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/iv_userpicture"
-                android:text="username" />
+        <TextView
+            android:id="@+id/tv_hakbun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tv_hakbun" />
 
-            <TextView
-                android:id="@+id/tv_hakbun"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_username"
-                android:layout_toRightOf="@+id/iv_userpicture"
-                android:text="tv_hakbun" />
-        </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

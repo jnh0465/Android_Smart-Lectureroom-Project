@@ -37,6 +37,7 @@
         <activity android:name="com.nuntteuniachim.sroomi.base.BaseActivity"/>
         <activity android:name="com.nuntteuniachim.sroomi.view.SettingActivity" android:screenOrientation="portrait"/>
         <activity android:name=".view.AttendRequestActivity" />
+        <activity android:name=".view.main.AttendDetailActivity" />
 
         <service
             android:name="com.nuntteuniachim.sroomi.fcm.MyFirebaseMessagingService"

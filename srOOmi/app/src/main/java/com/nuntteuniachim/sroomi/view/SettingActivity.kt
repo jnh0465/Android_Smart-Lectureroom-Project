@@ -43,6 +43,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.*
 
+//회원정보, 설정
+
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class SettingActivity : AppCompatActivity(), View.OnClickListener {
     private var disposable: CompositeDisposable? = CompositeDisposable()  //retrofit 통신

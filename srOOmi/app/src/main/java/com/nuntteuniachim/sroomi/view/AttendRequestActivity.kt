@@ -12,9 +12,11 @@ import com.nuntteuniachim.sroomi.retrofit.RetrofitClient
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_attend.*
+import kotlinx.android.synthetic.main.activity_attendrequest.*
 import org.json.JSONObject
 import retrofit2.Retrofit
+
+//푸시 클릭시 나타나는 액티비티 //요청/재요청
 
 class AttendRequestActivity : BaseActivity(), View.OnClickListener {
     private var disposable: CompositeDisposable? = CompositeDisposable()  //retrofit 통신
@@ -26,7 +28,7 @@ class AttendRequestActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_attend)
+        setContentView(R.layout.activity_attendrequest)
 
         btn_request.setOnClickListener(this) //리스너 연결
         btn_rerequest.setOnClickListener(this)

@@ -8,4 +8,8 @@
     <color name="sch03">#F0FFFF</color>
     <color name="sch04">#F0FFF0</color>
     <color name="sch05">#FFFACD</color>
+
+    <color name="attend">#4f81c7</color>
+    <color name="late">#64c4ed</color>
+    <color name="absence">#efa35c</color>
 </resources>

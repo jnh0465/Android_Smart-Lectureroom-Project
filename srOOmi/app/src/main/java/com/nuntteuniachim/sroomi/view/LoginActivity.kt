@@ -24,6 +24,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Retrofit
 
+//로그인
+
 class LoginActivity : BaseActivity(), View.OnClickListener {
     private var disposable: CompositeDisposable? = CompositeDisposable()  //retrofit 통신
     private var retrofitClient = RetrofitClient.getInstance()
@@ -49,7 +51,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         }
 
         btn_login.setOnClickListener(this) //리스너 연결
-//        tv_findpw.setOnClickListener(this)
         chk_autologin.setOnCheckedChangeListener(onCheckedChangeListener)
 
         chk_autologin!!.isChecked = SharedPreferenceManager.getBoolean(mContext, "PREFCB") //checkbox 상태 저장
@@ -62,7 +63,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 val test = validateForm(tv_editid, tv_editpw) //폼 채움 여부 확인
                 if (test) loginUser(tv_editid.text.toString(), tv_editpw.text.toString()) //로그인
             }
-//            R.id.tv_findpw -> materialDialog() //비밀번호 찾기
         }
     }
 
@@ -94,33 +94,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             loginUser(studentId, studentPw) //로그인
         }
     }
-
-//    private fun materialDialog() { //findpw_layout
-//        val registerLayout = LayoutInflater.from(mContext).inflate(R.layout.findpw_layout, null)
-//        MaterialStyledDialog.Builder(mContext)
-//                .setTitle("FIND PASSWORD")
-//                .setCustomView(registerLayout)
-//                .setNegativeText("CANSEL")
-//                .onNegative { dialog, which -> dialog.dismiss() }
-//                .setPositiveText("SEND")
-//                .onPositive { dialog, which ->
-////                    val test = presenter.validateForm(edit_id, edit_password) //폼 채움 여부 확인
-//                    if (edit_password === edit_password2) presenter.findPassword(edit_id.text.toString(), edit_password.text.toString())
-//                }.show()
-//    }
-//    
-//    private fun findPassword(studentId: String, studentPw: String) {
-//        disposable!!.add(iMyService!!.changePasswordUser(studentId, studentPw)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe { response ->
-//                    when (response) {
-//                        "1" -> Toast.makeText(mContext, "비밀번호가 변경되었습니다.", Toast.LENGTH_SHORT).show()
-//                        "2" -> Toast.makeText(mContext, "존재하지 않는 아이디입니다.", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//        )
-//    }
 
     //폼 채움 여부 확인
     private fun validateForm(studentId: TextView?, studentPw: TextView?): Boolean {
